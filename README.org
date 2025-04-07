@@ -1,0 +1,31 @@
+#+TITLE: UTMS RFC Index
+#+AUTHOR: Daniel Neagaru
+#+DESCRIPTION: Design specifications for the Universal Time Measurement System
+
+* Overview
+:PROPERTIES:
+:ID:       a4ef59d9-16d8-4fa6-bc85-bf86ca180224
+:END:
+This repository contains formal specifications (RFCs) for the UTMS project.
+
+RFCs define core concepts, protocols, data formats, philosophical principles, and system behaviors.
+
+* Conventions
+:PROPERTIES:
+:ID:       e3684791-3a35-4d41-b97a-2a4f34a0f2cb
+:END:
+- All RFCs are written in Emacs Org-mode.
+- Filenames follow the pattern: =rfc-XXX-title.org=
+- RFCs are immutable once published; superseded RFCs remain preserved.
+- Cross-references use [[rfc:XXX][RFC-XXX]] style for clarity.
+- Drafts are written outside the main folder until finalized (future feature).
+
+* RFC Index
+:PROPERTIES:
+:ID:       8419d590-df51-4758-baee-493058d68067
+:END:
+| RFC  | Title                 | Status   |
+|------|-----------------------|----------|
+| 000  | Template              | Template |
+| TBD  | Core Meta-Time Model  | Draft    |
+| TBD  | Layered Time Stack    | Planned  |

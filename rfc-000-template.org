@@ -1,0 +1,58 @@
+#+TITLE: RFC-XXX: Insert RFC Title Here
+#+RFC-ID: XXX
+#+STATUS: Draft
+#+AUTHOR: Daniel Neagaru
+#+CREATED: <2025-04-07>
+#+LAST-MODIFIED: <2025-04-07>
+#+VERSION: 0.1
+#+DEPENDS-ON:
+#+SUPERSEDES:
+#+ABSTRACT: A brief summary of what this RFC defines.
+
+* Introduction
+:PROPERTIES:
+:ID:       6afd28c6-3206-4d21-87a1-1c4b0480b200
+:END:
+Explain the purpose and motivation behind this RFC. What problem does it solve?
+
+* Terminology
+:PROPERTIES:
+:ID:       046ea6a2-3593-41e8-958a-d8aebaddc14d
+:END:
+Define key terms introduced here (or link to [[rfc:001][RFC-001]] for shared terms).
+
+* Specification
+:PROPERTIES:
+:ID:       04838f85-4299-49f8-a622-4d6f56ad730e
+:END:
+Detail the formal rules, data structures, behaviors, protocols, or algorithms introduced.
+
+* Examples
+:PROPERTIES:
+:ID:       f82275fe-2f74-46fd-b098-ecd3120de56a
+:END:
+Give usage examples, diagrams, or simulations (Hy snippets, if applicable).
+
+* Rationale
+:PROPERTIES:
+:ID:       e585346f-c1a8-41d5-b0ef-7ab2e10198b6
+:END:
+Why was this approach chosen? What alternatives were considered?
+
+* Security and Reliability Considerations
+:PROPERTIES:
+:ID:       0b30165b-8201-4cd9-9715-421520f2fdeb
+:END:
+Mention any risks, constraints, or edge cases worth noting.
+
+* Future Work
+:PROPERTIES:
+:ID:       0be8e091-86db-49ea-b814-3e03b3a97074
+:END:
+Outline open questions, limitations, or possible extensions.
+
+* Change Log
+:PROPERTIES:
+:ID:       97f49a91-3d52-4c3e-baa4-727f90727ae1
+:END:
+- 0.1 :: Initial draft
