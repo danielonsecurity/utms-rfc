@@ -1,0 +1,216 @@
+#+TITLE: RFC-002: UTMS Code Structure and Design Patterns
+#+RFC-ID: 002
+#+STATUS: Draft
+#+AUTHOR: Daniel Neagaru
+#+CREATED: <2025-04-07>
+#+LAST-MODIFIED: <2025-04-07>
+#+VERSION: 0.1
+#+DEPENDS-ON:
+#+SUPERSEDES:
+#+ABSTRACT: A brief summary of what this RFC defines.
+
+* Introduction
+:PROPERTIES:
+:ID:       6afd28c6-3206-4d21-87a1-1c4b0480b200
+:END:
+The *Universal Time Measurement System (UTMS)* is built with a
+modular, extensible architecture that emphasizes flexibility,
+composability, and dynamic behavior. This RFC documents the major
+*patterns* used in the UTMS codebase — including *Components*,
+*Managers*, *Models*, *Resolvers*, *Loaders*, and *Plugins* — and how
+they interact. Understanding these patterns is essential for
+contributing to, extending, or debugging the UTMS system.
+
+* Overview of UTMS Design Patterns
+:PROPERTIES:
+:ID:       9edb1c55-3189-4c95-be18-418e3e7b9398
+:END:
+UTMS follows six primary design patterns:
+
+** Components
+:PROPERTIES:
+:ID:       64aba7e1-584c-41e4-b497-d8a77c3800ad
+:END:
+Loosely coupled building blocks that represent atomic units of logic
+or data related to time.
+
+** Managers
+:PROPERTIES:
+:ID:       de3c5957-75e6-4888-8288-48a6e12b095b
+:END:
+Controllers that coordinate and manage collections of Components,
+providing service interfaces and encapsulating logic.
+
+** Models
+:PROPERTIES:
+:ID:       c4c105ce-6c7e-431a-b209-9f751ce9d4a4
+:END:
+Structured abstractions over time concepts (e.g. durations,
+timestamps, intervals) that represent the semantic layer of UTMS.
+
+** Resolvers (Hy)
+:PROPERTIES:
+:ID:       49470632-6aca-4e94-9ce9-0e14c88b1d63
+:END:
+Hy-specific evaluators that interpret Lisp expressions into actionable
+time logic, supporting context-sensitive resolution and dot access.
+
+** Loaders
+:PROPERTIES:
+:ID:       47b3496e-9c1e-4f5f-85b7-56ada8ab7212
+:END:
+Transformation units that ingest external definitions (JSON, Hy, YAML,
+etc.) and convert them into internal representations like Components
+or Models.
+
+** Plugins
+:PROPERTIES:
+:ID:       46019a97-d202-4412-b964-52e00e31a3be
+:END:
+Extension points that inject custom behavior, Components, or Resolvers
+into the system dynamically, without modifying core code.
+
+* How Data Flows in UTMS
+:PROPERTIES:
+:ID:       dd252eb2-b5e1-44e9-a33e-51f1e356e44e
+:END:
+
+1. =Loaders= ingest data from external definitions and transform it
+   into =Components= or =Models=.
+2. =Components= represent the atomic constructs (units, anchors,
+   formatters).
+3. =Managers= register, store, and orchestrate these =Components=.
+4. =Resolvers= evaluate Hy expressions, often invoking =Managers= or
+   =Models= to do so.
+5. =Models= wrap and organize multiple =Components= into higher-order
+   concepts.
+6. =Plugins= enhance or modify any of the above by injecting new logic
+   or data.
+
+Each part communicates via explicit APIs, avoiding tight coupling and
+making the system highly composable and testable.
+
+* Detailed Breakdown
+:PROPERTIES:
+:ID:       8152fd82-8f0e-428c-a90c-ea768963d4c1
+:END:
+
+** Components
+:PROPERTIES:
+:ID:       31d815f7-48bc-4bf6-b963-2ade4df3f769
+:END:
+- /Definition/: Atomic, self-contained units of time logic.
+- /Examples/:
+  - ~Unit~: seconds, minutes, custom planck-scale units
+  - ~Anchor~: now, event start, epoch
+  - ~Formatter~: string and structured output generators
+- /Responsibilities/:
+  - Represent and encapsulate time data.
+  - Remain stateless and independently usable.
+  - Support introspection and formatting.
+
+** Managers
+:PROPERTIES:
+:ID:       0180c00f-1766-4cb7-a8ba-5ec5109dfebf
+:END:
+- /Definition/: Controllers for handling and coordinating related
+  Components.
+- /Examples/:
+  - ~UnitManager~: conversion, scaling, normalization
+  - ~AnchorManager~: temporal resolution
+  - ~CommandManager~: CLI interaction routing
+- /Responsibilities/:
+  - Register and manage component lifecycles.
+  - Offer high-level service interfaces.
+  - Expose APIs for dynamic querying and interaction.
+
+** Models
+:PROPERTIES:
+:ID:       2f3c4023-70c7-4a30-a8f5-f7a9dad663d6
+:END:
+- /Definition/: Domain-level structures that encapsulate complex time
+  constructs.
+- /Examples/:
+  - ~TimeModel~: duration with uncertainty and anchor
+  - ~EventModel~: composed time spans with metadata
+- /Responsibilities/:
+  - Represent semantic or domain-level time concepts.
+  - Aggregate multiple Components.
+  - Provide stable APIs and serialization.
+
+** Resolvers
+:PROPERTIES:
+:ID:       28e4cbae-7736-4029-ae0f-0fa351439ca7
+:END:
+- /Definition/: Hy expression evaluators that resolve
+  context-sensitive logic.
+- /Examples/:
+  - ~DotResolver~: object.field.field traversal
+  - ~ExpressionResolver~: lambda/def-based computation
+- /Responsibilities/:
+  - Evaluate expressions in UTMS runtime.
+  - Allow dynamic time logic via Lisp constructs.
+  - Respect and apply scope, context, and hierarchy.
+
+** Loaders
+:PROPERTIES:
+:ID:       75e4f333-b646-4684-9fee-36e4c408c6e3
+:END:
+- /Definition/: Adapters for importing definitions into UTMS.
+- /Examples/:
+  - ~ConfigLoader~: parse config files into Components
+  - ~SourceLoader~: ingest domain-specific definitions
+- /Responsibilities/:
+  - Convert raw inputs into Components or Models.
+  - Validate, normalize, and structure definitions.
+  - Enable separation between source and runtime.
+
+** Plugins
+:PROPERTIES:
+:ID:       9383f2fe-3e14-4ae6-bca7-5749913430cb
+:END:
+- /Definition/: Mechanism for extending UTMS without modifying the
+  core.
+- /Examples/:
+  - ~AIPlugin~: auto-anchor prediction or time guessing
+  - ~CustomUnitPlugin~: new domain-specific units
+- /Responsibilities/:
+  - Inject functionality at runtime.
+  - Register Components, Models, or Resolvers.
+  - Enable loose integration with external systems.
+
+* Best Practices and Guidelines
+:PROPERTIES:
+:ID:       ec77bd26-3116-4532-a571-ee153e423370
+:END:
+
+1. *Loose Coupling*: Use managers or resolvers as bridges; avoid
+   direct hard dependencies.
+2. *Modularity*: Each element should focus on a single concern —
+   component logic, resolution, modeling, etc.
+3. *Extensibility*: Favor interfaces, registries, and plugins over
+   hardcoded logic.
+4. *Introspection*: Every part should self-describe (e.g. name, type,
+   properties).
+5. *Separation of Concerns*: Never mix component logic with resolution
+   or loading responsibilities.
+6. *Documentation*: Keep docstrings, inline hints, and examples
+   minimal but accurate — all modules should be browsable without
+   guesswork.
+
+* Conclusion
+:PROPERTIES:
+:ID:       eba6c29c-22a1-4420-a338-3094391925e7
+:END:
+This RFC formalizes the internal architecture and development patterns
+of UTMS. Every core subsystem — Components, Managers, Models,
+Resolvers, Loaders, Plugins — plays a unique and well-scoped role.
+
+This document serves as the entry point for navigating the codebase
+and should be updated as the system evolves.
+
+* Change Log
+:PROPERTIES:
+:ID:       97f49a91-3d52-4c3e-baa4-727f90727ae1
+:END:
+- 0.1 :: Initial draft

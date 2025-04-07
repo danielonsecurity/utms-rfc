@@ -13,38 +13,170 @@
 :PROPERTIES:
 :ID:       0bb2ca91-26df-4f88-9f31-4d981e731432
 :END:
-This document defines the core philosophical and architectural foundation of the Universal Time Measurement System (UTMS). It establishes the guiding principles, layer definitions, and key abstractions that the system is built upon.
+This RFC defines the foundational design philosophy of the Universal
+Time Measurement System (UTMS), including its first-class principles,
+second-class principles, and its layered architecture. It serves as
+the root reference for all subsequent RFCs.
 
 All future RFCs build on this structure.
 
-* Core Principles
+* First-Class Principles
 :PROPERTIES:
-:ID:       828aa307-1546-41ba-a46b-ea970471dc45
+:ID:       bad63ef3-923b-44c6-80a3-ad4b4c3ffd50
 :END:
+These principles are *non-negotiable*, and all UTMS layers, definitions, formats, and extensions must comply with them.
+
 
 ** UNIVERSALITY
 :PROPERTIES:
 :ID:       6ae17e5b-2cee-43eb-af1b-03df89dfae61
 :END:
-UTMS must support all time scales, from Planck time to the lifespan of the universe.
+UTMS must support a truly universal understanding and manipulation of
+time. This encompasses all time scales—sub-Planck to cosmic, discrete
+to continuous—and operates across all domains (scientific, symbolic,
+and experiential).
 
-** FLEXIBILITY
+
+** MODULARITY
 :PROPERTIES:
-:ID:       348af11a-c912-40db-80c0-f7c22f775430
+:ID:       64d4fbeb-04d4-441c-9966-3956931b1305
 :END:
-UTMS adapts to various use cases, including scientific modeling, event tracking, and philosophical analysis.
+UTMS components must be completely modular, allowing independent
+layers to operate and evolve without interdependencies. Modules should
+be swappable, extendable, and compatible with the system’s expanding
+capabilities, including AI-driven enhancements.
+
 
 ** EXTENSIBILITY
 :PROPERTIES:
 :ID:       f6a8237c-d08a-4526-9d20-14ceface0443
 :END:
-Users can define their own units, anchors, layers, or semantics without modifying the core.
+UTMS must be inherently extensible at every level, from time units and
+anchors to AI-enhanced time interpretation. New logic, formats,
+plugins, and analysis tools must be easily added or customized without
+modifying the core system.
+
 
 ** CODE-AS-DATA
 :PROPERTIES:
 :ID:       114049a6-4062-464e-8042-ebf52507e6f4
 :END:
-The system treats all constructs (e.g., units, anchors, rules) as code and data using Hy, enabling full introspection and programmable logic.
+All UTMS constructs must be expressible as Hy code and data. This
+means both declarative representations (via macros, Hy-based data) and
+the ability to perform dynamic computation. Code and data must be
+deeply integrated to allow for on-the-fly code generation, analysis,
+and AI-driven metaprogramming.
+
+
+** INTROSPECTABILITY
+:PROPERTIES:
+:ID:       878ffe91-fe6f-4562-95a4-b0b2534d3727
+:END:
+Every UTMS data object must be introspectable, capable of revealing
+its structure, history, and metadata. Beyond just human-readable
+formats, introspection must also facilitate AI-driven
+analysis—allowing the system to not only reflect on time data but also
+offer insights, predictions, and recommendations based on temporal
+patterns.
+
+* Second-Class Principles
+:PROPERTIES:
+:ID:       a233d109-dc85-4168-baf1-b16125852e3a
+:END:
+
+** Consistency of representation
+:PROPERTIES:
+:ID:       780e890d-801e-4442-a06c-79b6b45c5708
+:END:
+Time data should be represented consistently across all layers, with
+clear definitions of units, anchors, and formats.
+
+** Predictability of Behavior
+:PROPERTIES:
+:ID:       62c0de6a-3a25-4654-bbd9-a81a0e3350bd
+:END:
+UTMS must maintain predictability in its operations, especially when
+interacting with complex AI systems or user extensions.
+
+** Separation of Concerns
+:PROPERTIES:
+:ID:       11556a4d-d677-4c83-bbff-080a31f333b0
+:END:
+Different layers in UTMS should address distinct responsibilities,
+with clear boundaries between representation, computation, AI
+analysis, and user interaction.
+
+** Reusability and Generalization
+:PROPERTIES:
+:ID:       981008b3-2ce8-480c-bdb7-be090212c614
+:END:
+Code, components, and algorithms should be designed with reusability
+and generality in mind, enabling the creation of tools and solutions
+that can serve multiple use cases.
+
+** Dynamic interactivity
+:PROPERTIES:
+:ID:       58afd361-fe3c-4f90-8099-6175bff1e17d
+:END:
+UTMS should enable dynamic interaction with time-related data,
+including AI-based insights, format changes, and on-the-fly
+adjustments based on user or system-driven input.
+
+** Minimal intrusiveness of AI
+:PROPERTIES:
+:ID:       5394e60b-27b2-4ae7-b8d4-40a3388ea343
+:END:
+AI should operate in a supportive role, augmenting user experience and
+analysis without overshadowing the core system or disrupting user
+expectations.
+
+** Scalability of data handling
+:PROPERTIES:
+:ID:       a855dc5b-5dee-438e-ba3c-5d3b5eb39bf2
+:END:
+UTMS must handle a vast range of time-related data without performance
+degradation, ensuring that the system scales well across both small
+and large time spans and diverse domains.
+
+** Transparency of AI-Driven decisions
+:PROPERTIES:
+:ID:       4d50c9e9-c266-4be4-9a77-6cda3a98f9e2
+:END:
+AI analysis, recommendations, and predictions must be transparent,
+providing clear explanations about how conclusions are drawn and what
+data was used.
+
+** Data Integrity and safety
+:PROPERTIES:
+:ID:       d01ee293-e2ae-402d-977e-207bc4a64a60
+:END:
+UTMS should ensure the integrity of time data, preventing data loss,
+corruption, or inconsistent states across different layers, especially
+as AI or external systems interact with the data.
+
+** Human centric design
+:PROPERTIES:
+:ID:       fb2d7c5a-3f5f-4d4b-9801-a0aa4e9079e9
+:END:
+UTMS should be designed with a focus on user interaction and
+user-friendly insights, making advanced temporal analysis accessible
+and actionable for humans, regardless of technical background.
+
+** Security and privacy
+:PROPERTIES:
+:ID:       eb9e592d-0667-4d39-86e5-10b7e8efd6f6
+:END:
+Time data within UTMS should be handled securely, ensuring that user
+data, especially when extended or analyzed by AI, remains private and
+protected.
+
+** Cross-domain compatibility
+:PROPERTIES:
+:ID:       606ba869-d463-4e02-b9f0-f6da8d452fd2
+:END:
+UTMS must be compatible across different domains (scientific,
+business, social, etc.) with customizable layers that adapt to the
+domain-specific needs and time representations.
 
 * Layered Meta-Time Model
 :PROPERTIES:
