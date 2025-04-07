@@ -29,3 +29,10 @@ RFCs define core concepts, protocols, data formats, philosophical principles, an
 | 000  | Template              | Template |
 | TBD  | Core Meta-Time Model  | Draft    |
 | TBD  | Layered Time Stack    | Planned  |
+
+* Resources
+:PROPERTIES:
+:ID:       525ed4e3-cd5b-4bfc-b3f2-c730b6cc9e76
+:END:
+
+- [[file:glossary.org][UTMS Glossary]]

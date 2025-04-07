@@ -1,0 +1,109 @@
+#+TITLE: UTMS Glossary
+#+AUTHOR: Daniel Neagaru
+#+DESCRIPTION: Glossary of core terminology used in the Universal Time Measurement System
+
+* Glossary
+:PROPERTIES:
+:ID:       9f17fa3a-8cdf-4945-89b1-1584314cdcfd
+:END:
+
+** UTMS
+:PROPERTIES:
+:ID:       4c9385b7-e30f-4aa3-ba4f-ed9800fb20d1
+:END:
+Universal Time Measurement/Management System — a programmable,
+extensible, and multi-layered time framework supporting multiple
+representations, computations, and human+machine interoperability.
+
+** Meta-Time
+:PROPERTIES:
+:ID:       1a530e2b-b574-4491-a300-f1fcbba482b2
+:END:
+An abstraction layer that encompasses and connects all definitions and
+representations of time (physical, perceptual, cultural,
+computational) into a coherent, hierarchical system.
+
+** Layer
+:PROPERTIES:
+:ID:       076ec95d-85bf-4804-a1fd-cbe35e3af892
+:END:
+A self-contained stratum of functionality or abstraction within the
+UTMS time stack. Inspired by the TCP/IP model. Layers pass data
+("PDUs") between each other.
+
+** PDU
+:PROPERTIES:
+:ID:       1b8d5e04-5352-426c-9e2b-2be554022b09
+:END:
+Protocol Data Unit — A time element (timestamp, range, uncertainty,
+etc.) that is structured and passed through UTMS layers. PDUs are
+composed of layered fields, like network packets.
+
+** TDU
+:PROPERTIES:
+:ID:       42f5e2dc-12f0-4257-9506-5447dee246d1
+:END:
+Time Data Unit — The core abstraction unit at each layer (e.g., binary
+delta at Physical layer, entropy sequence at Info layer, etc.)
+
+** RFC
+:PROPERTIES:
+:ID:       e1a1f45a-bf3e-43e7-b7f9-d67c47e81023
+:END:
+Request for Comments — A formal specification document that defines a
+UTMS component, protocol, format, or philosophical
+principle. Immutable once published.
+
+** Hy
+:PROPERTIES:
+:ID:       63e6c14c-3cc8-4339-958f-3f03f0eb07dc
+:END:
+A Lisp dialect that compiles to Python AST. Used in UTMS for defining
+units, anchors, transformations, and configuration in code-as-data
+style.
+
+** Anchor
+:PROPERTIES:
+:ID:       fb6e6b7a-ad66-4304-a8e8-ff8ea4f05c6e
+:END:
+A fixed or dynamic point in time from which other time values can be
+derived or measured. e.g., Now, Unix Epoch, Big Bang.
+
+** Formatter
+:PROPERTIES:
+:ID:       297e84a8-f9bb-4674-be3a-1995c5c8540e
+:END:
+A component that renders internal time representations into human- or
+machine-readable forms (scientific, calendar, unit-based, etc.).
+
+** Time Stack
+:PROPERTIES:
+:ID:       5473000c-7b74-4728-a9ec-3ac4a8ca973f
+:END:
+The conceptual model of layered abstractions in UTMS — e.g., Physical,
+Informational, Representational, Semantic, Application.
+
+** Interpretability
+:PROPERTIES:
+:ID:       af334bc7-76fc-4218-9d7a-b382a3652be9
+:END:
+The ability to transform and view time elements in alternative but
+meaningful formats (e.g., entropy, uncertainty, language, coordinate
+offset).
+
+** Extensibility
+:PROPERTIES:
+:ID:       8d6a9715-bffe-4c44-ae0f-f65c3c9d508d
+:END:
+The system’s ability to be enhanced by user-defined units,
+transformations, anchors, and semantic mappings without modifying the
+core.
+
+** Code-as-Data
+:PROPERTIES:
+:ID:       08fc9b6d-1fe4-475f-8df6-0366d2817f08
+:END:
+A design principle where time constructs (e.g., anchors, units) are
+written in Hy and treated as both executable code and configuration
+data.
+

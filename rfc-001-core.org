@@ -1,0 +1,138 @@
+#+TITLE: RFC-001: Core Meta-Time Model and Layered Architecture
+#+RFC-ID: 001
+#+STATUS: Draft
+#+AUTHOR: Daniel Neagaru
+#+CREATED: <2025-04-07>
+#+LAST-MODIFIED: <2025-04-07>
+#+VERSION: 0.1
+#+DEPENDS-ON:
+#+SUPERSEDES:
+#+ABSTRACT: Defines the foundational time model, layer stack, terminology, and principles of UTMS.
+
+* Introduction
+:PROPERTIES:
+:ID:       0bb2ca91-26df-4f88-9f31-4d981e731432
+:END:
+This document defines the core philosophical and architectural foundation of the Universal Time Measurement System (UTMS). It establishes the guiding principles, layer definitions, and key abstractions that the system is built upon.
+
+All future RFCs build on this structure.
+
+* Core Principles
+:PROPERTIES:
+:ID:       828aa307-1546-41ba-a46b-ea970471dc45
+:END:
+
+** UNIVERSALITY
+:PROPERTIES:
+:ID:       6ae17e5b-2cee-43eb-af1b-03df89dfae61
+:END:
+UTMS must support all time scales, from Planck time to the lifespan of the universe.
+
+** FLEXIBILITY
+:PROPERTIES:
+:ID:       348af11a-c912-40db-80c0-f7c22f775430
+:END:
+UTMS adapts to various use cases, including scientific modeling, event tracking, and philosophical analysis.
+
+** EXTENSIBILITY
+:PROPERTIES:
+:ID:       f6a8237c-d08a-4526-9d20-14ceface0443
+:END:
+Users can define their own units, anchors, layers, or semantics without modifying the core.
+
+** CODE-AS-DATA
+:PROPERTIES:
+:ID:       114049a6-4062-464e-8042-ebf52507e6f4
+:END:
+The system treats all constructs (e.g., units, anchors, rules) as code and data using Hy, enabling full introspection and programmable logic.
+
+* Layered Meta-Time Model
+:PROPERTIES:
+:ID:       ee10bfd4-4c7d-45d4-9a21-2fdc13400221
+:END:
+
+Inspired by the TCP/IP model, UTMS is organized into a stack of five conceptual layers:
+
+| Layer | Name             | Purpose                                                    |
+|-------+------------------+------------------------------------------------------------|
+| L1    | Physical Layer    | Encodes base time deltas, raw temporal measurement units   |
+| L2    | Informational     | Adds entropy, uncertainty, or symbolic complexity          |
+| L3    | Representational  | Maps to human-readable formats (calendar, scientific)      |
+| L4    | Semantic          | Associates meaning: “birthday”, “event start”, etc.        |
+| L5    | Application       | Ties time data into application logic, workflows, APIs     |
+
+Each Protocol Data Unit (PDU) includes nested components from each layer. Data is passed top-down and bottom-up.
+
+* Protocol Data Unit (PDU) Structure
+:PROPERTIES:
+:ID:       8fdd8fe8-7421-4954-a5c4-fe723772f945
+:END:
+
+A UTMS PDU is a composite structure representing a time element as it moves through the stack.
+
+** Required Fields (by layer)
+:PROPERTIES:
+:ID:       340a1c19-8a6c-4d10-836a-3c80033d89f0
+:END:
+- Physical: delta (seconds), unit (e.g., "s"), origin (e.g., "anchor-id")
+- Informational: uncertainty, entropy
+- Representational: format type, rendered output
+- Semantic: tag, context
+- Application: function binding, user-defined metadata
+
+** Optional Fields
+:PROPERTIES:
+:ID:       ce48afc1-eb29-4a2b-beb4-c7fae70857d0
+:END:
+Each layer may extend the PDU structure with additional keys.
+
+** PDU Example (Hy-style)
+:PROPERTIES:
+:ID:       5b49a84e-6868-4da1-9540-9a0b6e043ea6
+:END:
+#+begin_src hy
+{
+  "physical": {
+    "delta": 12345.67,
+    "unit": "s",
+    "origin": "anchor:unix-epoch"
+  },
+  "informational": {
+    "uncertainty": 0.03,
+    "entropy": 12.3
+  },
+  "representational": {
+    "format": "calendar",
+    "output": "2025-04-07T12:34:56Z"
+  },
+  "semantic": {
+    "tag": "start-of-event",
+    "context": "project:utms"
+  },
+  "application": {
+    "callback": "notify-user",
+    "metadata": {"priority": "high"}
+  }
+}
+#+end_src
+
+* Glossary Reference
+:PROPERTIES:
+:ID:       29d681d5-5508-47e9-ae3c-dd2dfa8f97ee
+:END:
+Refer to [[file:../glossary.org][UTMS Glossary]] for terms such as: PDU, Meta-Time, Layer, Anchor, etc.
+
+* Future Work
+:PROPERTIES:
+:ID:       e91089ae-1929-4a2f-943a-c2441d193f41
+:END:
+- Layer-specific RFCs (L1-L5)
+- Anchor system formalization (RFC-002)
+- Formatters and uncertainty scaling (RFC-003)
+- Dynamic layer insertion/removal
+
+* Change Log
+:PROPERTIES:
+:ID:       f55790ca-68b2-4ca9-a64d-267fd593c74d
+:END:
+- 0.1 :: Initial draft
