@@ -5,9 +5,9 @@
 #+CREATED: <2025-04-07>
 #+LAST-MODIFIED: <2025-04-07>
 #+VERSION: 0.1
-#+DEPENDS-ON:
+#+DEPENDS-ON: RFC-001
 #+SUPERSEDES:
-#+ABSTRACT: A brief summary of what this RFC defines.
+#+ABSTRACT: Defines the core architectural patterns, their relationships, and implementation guidelines for UTMS, including Components, Managers, Loaders, Resolvers, Models, and Plugins.
 
 * Introduction
 :PROPERTIES:
@@ -25,159 +25,426 @@ contributing to, extending, or debugging the UTMS system.
 :PROPERTIES:
 :ID:       9edb1c55-3189-4c95-be18-418e3e7b9398
 :END:
-UTMS follows six primary design patterns:
+UTMS follows six primary design patterns that work together in a layered architecture:
+
 
 ** Components
 :PROPERTIES:
 :ID:       64aba7e1-584c-41e4-b497-d8a77c3800ad
 :END:
-Loosely coupled building blocks that represent atomic units of logic
-or data related to time.
+Base building blocks with lazy loading and dict-like access.
 
 ** Managers
 :PROPERTIES:
 :ID:       de3c5957-75e6-4888-8288-48a6e12b095b
 :END:
-Controllers that coordinate and manage collections of Components,
-providing service interfaces and encapsulating logic.
-
-** Models
-:PROPERTIES:
-:ID:       c4c105ce-6c7e-431a-b209-9f751ce9d4a4
-:END:
-Structured abstractions over time concepts (e.g. durations,
-timestamps, intervals) that represent the semantic layer of UTMS.
-
-** Resolvers (Hy)
-:PROPERTIES:
-:ID:       49470632-6aca-4e94-9ce9-0e14c88b1d63
-:END:
-Hy-specific evaluators that interpret Lisp expressions into actionable
-time logic, supporting context-sensitive resolution and dot access.
+Type-safe collection managers handling object lifecycle and persistence.
 
 ** Loaders
 :PROPERTIES:
+:ID:       c4c105ce-6c7e-431a-b209-9f751ce9d4a4
+:END:
+Transform external definitions into system components through context-aware loading.
+
+** Resolvers
+:PROPERTIES:
+:ID:       49470632-6aca-4e94-9ce9-0e14c88b1d63
+:END:
+Handle expression evaluation and dynamic content resolution.
+
+** Models
+:PROPERTIES:
 :ID:       47b3496e-9c1e-4f5f-85b7-56ada8ab7212
 :END:
-Transformation units that ingest external definitions (JSON, Hy, YAML,
-etc.) and convert them into internal representations like Components
-or Models.
+Define type-safe data structures and behaviors.
 
 ** Plugins
 :PROPERTIES:
 :ID:       46019a97-d202-4412-b964-52e00e31a3be
 :END:
-Extension points that inject custom behavior, Components, or Resolvers
-into the system dynamically, without modifying core code.
+Provide extensible node handling and system customization.
 
-* How Data Flows in UTMS
+* Pattern Relationships
 :PROPERTIES:
-:ID:       dd252eb2-b5e1-44e9-a33e-51f1e356e44e
+:ID:       ccd44224-9519-4f26-938a-4f4dbbdb47f7
 :END:
 
-1. =Loaders= ingest data from external definitions and transform it
-   into =Components= or =Models=.
-2. =Components= represent the atomic constructs (units, anchors,
-   formatters).
-3. =Managers= register, store, and orchestrate these =Components=.
-4. =Resolvers= evaluate Hy expressions, often invoking =Managers= or
-   =Models= to do so.
-5. =Models= wrap and organize multiple =Components= into higher-order
-   concepts.
-6. =Plugins= enhance or modify any of the above by injecting new logic
-   or data.
-
-Each part communicates via explicit APIs, avoiding tight coupling and
-making the system highly composable and testable.
-
-* Detailed Breakdown
+** Data Flow
 :PROPERTIES:
-:ID:       8152fd82-8f0e-428c-a90c-ea768963d4c1
+:ID:       eec6b991-74e2-4934-a1f3-acb78186f877
+:END:
+1. Plugins process raw node definitions
+2. Loaders use plugins to create components
+3. Components are managed by managers
+4. Resolvers handle dynamic evaluation
+5. Models provide type-safe data structures
+
+** Integration Points
+:PROPERTIES:
+:ID:       400b0916-c608-4f59-9072-40b0fc00969b
+:END:
+- Loader ↔ Plugin: Node processing
+- Loader ↔ Manager: Component creation
+- Component ↔ Manager: Lifecycle management
+- Resolver ↔ Manager: Dynamic resolution
+- Model ↔ Manager: Type safety
+
+* Pattern Implementations
+:PROPERTIES:
+:ID:       3dd91d63-366d-4d47-955f-6b4b3cffc7cb
 :END:
 
-** Components
+** Component Pattern
 :PROPERTIES:
-:ID:       31d815f7-48bc-4bf6-b963-2ade4df3f769
+:ID:       d84d147a-19e0-4ea4-a46b-f7c066f08ae0
 :END:
-- /Definition/: Atomic, self-contained units of time logic.
-- /Examples/:
-  - ~Unit~: seconds, minutes, custom planck-scale units
-  - ~Anchor~: now, event start, epoch
-  - ~Formatter~: string and structured output generators
-- /Responsibilities/:
-  - Represent and encapsulate time data.
-  - Remain stateless and independently usable.
-  - Support introspection and formatting.
 
-** Managers
+** Visual Overview
 :PROPERTIES:
-:ID:       0180c00f-1766-4cb7-a8ba-5ec5109dfebf
+:ID:       e4ea1cc9-61fb-4ce7-bed9-d6bd127a1b1c
 :END:
-- /Definition/: Controllers for handling and coordinating related
-  Components.
-- /Examples/:
-  - ~UnitManager~: conversion, scaling, normalization
-  - ~AnchorManager~: temporal resolution
-  - ~CommandManager~: CLI interaction routing
-- /Responsibilities/:
-  - Register and manage component lifecycles.
-  - Offer high-level service interfaces.
-  - Expose APIs for dynamic querying and interaction.
+#+begin_src
+                                    ┌─────────────┐
+                                    │   Plugins   │
+                                    └─────┬───────┘
+                                          │
+                                          ▼
+┌──────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   File   │ => │    AST      │ => │   Loaders   │ => │  Components │
+│  (*.hy)  │    │  (HyNodes)  │    │             │    │             │
+└──────────┘    └─────────────┘    └──────┬──────┘    └───────┬─────┘
+                                          │                   │
+                                    ┌─────┴──────┐            │
+                                    │ Resolvers  │            │
+                                    └─────┬──────┘            │
+                                          │                   │
+                                    ┌─────┴──────┐    ┌───────▼──────┐
+                                    │  Managers  │ <= │    Models    │
+                                    └────────────┘    └──────────────┘
+#+end_src
 
-** Models
+** Data Flow Stages
 :PROPERTIES:
-:ID:       2f3c4023-70c7-4a30-a8f5-f7a9dad663d6
+:ID:       257e5ec2-eff4-41ca-867e-e4e2d93929e7
 :END:
-- /Definition/: Domain-level structures that encapsulate complex time
-  constructs.
-- /Examples/:
-  - ~TimeModel~: duration with uncertainty and anchor
-  - ~EventModel~: composed time spans with metadata
-- /Responsibilities/:
-  - Represent semantic or domain-level time concepts.
-  - Aggregate multiple Components.
-  - Provide stable APIs and serialization.
 
-** Resolvers
-:PROPERTIES:
-:ID:       28e4cbae-7736-4029-ae0f-0fa351439ca7
-:END:
-- /Definition/: Hy expression evaluators that resolve
-  context-sensitive logic.
-- /Examples/:
-  - ~DotResolver~: object.field.field traversal
-  - ~ExpressionResolver~: lambda/def-based computation
-- /Responsibilities/:
-  - Evaluate expressions in UTMS runtime.
-  - Allow dynamic time logic via Lisp constructs.
-  - Respect and apply scope, context, and hierarchy.
+1. Input Processing
+   - *.hy files are read
+   - AST nodes are generated
+   - Plugins process specific node types
 
-** Loaders
-:PROPERTIES:
-:ID:       75e4f333-b646-4684-9fee-36e4c408c6e3
-:END:
-- /Definition/: Adapters for importing definitions into UTMS.
-- /Examples/:
-  - ~ConfigLoader~: parse config files into Components
-  - ~SourceLoader~: ingest domain-specific definitions
-- /Responsibilities/:
-  - Convert raw inputs into Components or Models.
-  - Validate, normalize, and structure definitions.
-  - Enable separation between source and runtime.
+2. Loading Stage
+   - Loaders use plugins to parse nodes
+   - Components are created from parsed data
+   - Initial state is established
 
-** Plugins
+3. Resolution Stage
+   - Resolvers handle dynamic expressions
+   - Context is applied
+   - Values are evaluated
+
+4. Management Stage
+   - Managers maintain component lifecycle
+   - Models provide type-safe structures
+   - State is persisted
+
+** Example Flow: Config Processing
 :PROPERTIES:
-:ID:       9383f2fe-3e14-4ae6-bca7-5749913430cb
+:ID:       efb9f4bd-f294-42a5-bac5-32c0fabe30e3
 :END:
-- /Definition/: Mechanism for extending UTMS without modifying the
-  core.
-- /Examples/:
-  - ~AIPlugin~: auto-anchor prediction or time guessing
-  - ~CustomUnitPlugin~: new domain-specific units
-- /Responsibilities/:
-  - Inject functionality at runtime.
-  - Register Components, Models, or Resolvers.
-  - Enable loose integration with external systems.
+
+#+begin_src
+config.hy => ConfigNodePlugin => ConfigLoader => ConfigComponent
+                                      ↓              ↓
+                               ConfigResolver => ConfigManager <= Config
+#+end_src
+
+1. File Processing
+   - config.hy contains configuration definitions
+   - ConfigNodePlugin parses custom-set-config forms
+   - AST nodes are generated with type information
+
+2. Loading
+   - ConfigLoader processes nodes
+   - Creates Config models
+   - Initializes ConfigComponent
+
+3. Resolution
+   - ConfigResolver handles dynamic values
+   - Evaluates expressions
+   - Applies context
+
+4. Management
+   - ConfigManager maintains configs
+   - Handles lifecycle
+   - Provides access API
+
+
+*** Core Implementation
+:PROPERTIES:
+:ID:       f9fb7f53-5254-4fca-82cf-e1f4f9499d61
+:END:
+#+begin_src python
+class SystemComponent(MutableMapping, ComponentMixin):
+    def __init__(self, config_dir: str, component_manager=None):
+        self._config_dir = config_dir
+        self._component_manager = component_manager
+        self._items = {}
+        self._loaded = False
+#+end_src
+
+*** Key Responsibilities
+:PROPERTIES:
+:ID:       02f1363d-afb1-47e1-af6a-4ed8187dac0d
+:END:
+- Dict-like access to component data
+- Lazy loading mechanism
+- Component manager integration
+- State management
+
+*** Example: ConfigComponent
+:PROPERTIES:
+:ID:       f3956dbe-c0ab-4734-b2a6-9f6ca50fd5fe
+:END:
+#+begin_src python
+class ConfigComponent(SystemComponent):
+    def load(self) -> None:
+        config_file = os.path.join(self._config_dir, "config.hy")
+        nodes = self._ast_manager.parse_file(config_file)
+        self._items = self._loader.process(nodes, context)
+#+end_src
+
+** Manager Pattern
+:PROPERTIES:
+:ID:       2c8417d4-1c96-4e8b-ba94-883badd26f00
+:END:
+
+*** Core Implementation
+:PROPERTIES:
+:ID:       1e303935-e82b-4ad1-bbbc-c7a8323da895
+:END:
+#+begin_src python
+class BaseManager(Generic[T], ManagerMixin):
+    def __init__(self):
+        self._items: Dict[str, T] = {}
+        self._initialized: bool = False
+
+    @abstractmethod
+    def create(self, label: str, **kwargs) -> T: ...
+    def get(self, label: str) -> Optional[T]: ...
+    def add(self, label: str, item: T) -> None: ...
+#+end_src
+
+*** Key Responsibilities
+:PROPERTIES:
+:ID:       1f45e3e8-6970-4289-be66-f2881dcc0d58
+:END:
+- Type-safe collection management
+- Object lifecycle handling
+- Serialization support
+- State tracking
+
+*** Example: ConfigManager
+:PROPERTIES:
+:ID:       c469d3b7-7155-42f5-8b72-40b5e1de9905
+:END:
+#+begin_src python
+class ConfigManager(BaseManager[Config]):
+    def create(
+        self,
+        key: str,
+        value: Any,
+        is_dynamic: bool = False,
+        original: Optional[str] = None,
+    ) -> Config:
+        config = Config(
+            key=key,
+            value=value,
+            is_dynamic=is_dynamic,
+            original=original,
+        )
+        self.add(key, config)
+        return config
+#+end_src
+
+** Resolver Pattern
+:PROPERTIES:
+:ID:       148bf7cf-7e3a-4070-a1ab-3c8c1f3c2d43
+:END:
+
+*** Core Implementation
+:PROPERTIES:
+:ID:       35adaceb-11b0-4433-8a45-456dc23e19ac
+:END:
+#+begin_src python
+class HyResolver(ExpressionResolver, LocalsProvider, ResolverMixin):
+    def resolve(
+        self, 
+        expr: HyValue,
+        context: Context = None,
+        local_names: LocalsDict = None
+    ) -> Tuple[Any, DynamicExpressionInfo]: ...
+#+end_src
+
+*** Key Responsibilities
+:PROPERTIES:
+:ID:       d3bb5036-0235-4482-b229-0c91ba0811c4
+:END:
+- Expression evaluation
+- Dynamic content handling
+- Context management
+- Dot operator resolution
+
+*** Example: ConfigResolver
+:PROPERTIES:
+:ID:       c51763ea-7b64-4ffa-9a09-7aee2509690c
+:END:
+#+begin_src python
+class ConfigResolver(HyResolver):
+    def _resolve_expression(
+        self,
+        expr: HyExpression,
+        context: Context,
+        local_names: LocalsDict = None
+    ) -> ResolvedValue:
+        if str(expr[0]) == "custom-set-config":
+            result = {}
+            for setting in expr[1:]:
+                key = str(setting[0])
+                value = setting[1]
+                resolved_value, _ = self.resolve(value, context, local_names)
+                result[key] = resolved_value
+            return result
+#+end_src
+
+** Loader Pattern
+:PROPERTIES:
+:ID:       db108a1a-b70d-426a-9bf0-6f4754e88e01
+:END:
+
+*** Core Implementation
+:PROPERTIES:
+:ID:       0915ce3a-88dc-4819-965e-ebeebc0b9092
+:END:
+#+begin_src python
+class ComponentLoader(ABC, Generic[T, M], LoaderMixin):
+    def process(
+        self,
+        nodes: List[HyNode],
+        context: LoaderContext
+    ) -> Dict[str, T]: ...
+#+end_src
+
+*** Key Responsibilities
+:PROPERTIES:
+:ID:       365aa3c0-f67c-4675-8e18-c86f2c070d18
+:END:
+- Node parsing
+- Object creation
+- Context handling
+- Manager integration
+
+*** Example: ConfigLoader
+:PROPERTIES:
+:ID:       ae2f5751-0189-4e74-984b-7535d6df1ab1
+:END:
+#+begin_src python
+class ConfigLoader(ComponentLoader[Config, ConfigManager]):
+    def parse_definitions(self, nodes: List[HyNode]) -> Dict[str, dict]:
+        configs = {}
+        for node in nodes:
+            if self.validate_node(node, "custom-set-config"):
+                for setting in node.children[1:]:
+                    key = str(setting.value)
+                    value_node = setting.children[0]
+                    configs[key] = {
+                        "key": key,
+                        "value": value_node.value,
+                        "is_dynamic": value_node.is_dynamic,
+                        "original": value_node.original
+                    }
+        return configs
+#+end_src
+
+** Model Pattern
+:PROPERTIES:
+:ID:       52c6cbd1-b1ff-4e5d-b991-a29f1301d82d
+:END:
+
+*** Core Implementation
+:PROPERTIES:
+:ID:       e2d87ad3-30ba-4168-9d3a-5dc10cce0846
+:END:
+#+begin_src python
+@dataclass
+class Config(ModelMixin):
+    key: str
+    value: Any
+    is_dynamic: bool = False
+    original: Optional[str] = None
+#+end_src
+
+*** Key Responsibilities
+:PROPERTIES:
+:ID:       05b80dbb-0db7-4202-825f-d06ff49e339d
+:END:
+- Data structure definition
+- Type safety
+- Value formatting
+- Identity management
+
+** Plugin Pattern
+:PROPERTIES:
+:ID:       cc2ef330-caaa-4748-b8df-59a553877566
+:END:
+
+*** Core Implementation
+:PROPERTIES:
+:ID:       401b64d9-4c52-47c4-929e-739c73b7c911
+:END:
+#+begin_src python
+class NodePlugin(UTMSPlugin):
+    @property
+    @abstractmethod
+    def node_type(self) -> str: ...
+    
+    @abstractmethod
+    def parse(self, expression: Any) -> "HyNode": ...
+    
+    @abstractmethod
+    def format(self, node: "HyNode") -> list[str]: ...
+#+end_src
+
+*** Key Responsibilities
+:PROPERTIES:
+:ID:       77c60ee0-122c-4df2-b346-43b7a142ccd2
+:END:
+- Node type handling
+- Expression parsing
+- Node formatting
+- Plugin lifecycle
+
+*** Example: ConfigNodePlugin
+:PROPERTIES:
+:ID:       07713402-3d53-4891-8724-8d4c3a89e621
+:END:
+#+begin_src python
+class ConfigNodePlugin(NodePlugin):
+    @property
+    def node_type(self) -> str:
+        return "custom-set-config"
+
+    def parse(self, expr) -> HyNode:
+        node = HyNode(
+            type=self.node_type,
+            value=None,
+            original=hy.repr(expr).strip("'"),
+            children=[]
+        )
+        # Node parsing implementation
+        return node
+#+end_src
+
 
 * Best Practices and Guidelines
 :PROPERTIES:
