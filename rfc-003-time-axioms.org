@@ -1,0 +1,156 @@
+#+TITLE: RFC-003: Formal Time Axioms and Symbol Definitions
+#+RFC-ID: 003
+#+STATUS: Draft
+#+AUTHOR: Daniel Neagaru
+#+CREATED: <2025-04-15>
+#+LAST-MODIFIED: <2025-04-15>
+#+VERSION: 0.1
+#+DEPENDS-ON: RFC-001
+#+SUPERSEDES:
+#+ABSTRACT: Defines a minimal symbolic and axiomatic foundation for time, grounded in physical reality and model-agnostic compatibility.
+
+
+* Introduction
+:PROPERTIES:
+:ID:       8dba509e-5c43-4217-8096-d65514541b2a
+:END:
+This RFC defines a scientifically rigorous symbolic and axiomatic
+foundation for time, independent of UTMS. It introduces the smallest
+possible set of universally accepted axioms that any physical theory
+of time must satisfy. This foundation is designed to allow maximal
+freedom for modeling different theories of time (block universe,
+temporal branching, causal loops, etc.) without bias. It is intended
+to enable both human and AI reasoning about time with minimal
+ontological commitment.
+
+* Logical Notation
+:PROPERTIES:
+:ID:       31918d99-1312-4d3e-9055-b3ac31001a50
+:END:
+
+This RFC uses standard symbols from first-order predicate logic:
+
+| Symbol | Meaning                               |
+|--------+---------------------------------------|
+| ∀      | Universal quantifier                  |
+| ∃      | Existential quantifier                |
+| ∧      | Logical AND                           |
+| ∨      | Logical OR                            |
+| ¬      | Logical NOT                           |
+| ⇒      | Logical implication                   |
+| ⇔      | Logical equivalence                   |
+| ⊭      | Non-logical equivalence               |
+| ∈      | Set membership                        |
+| ∉      | Set non-membership                    |
+| ⊥      | Undefined / contradiction             |
+| ⊤      | Truth                                 |
+| =      | Value equality                        |
+| ≠      | Inequality                            |
+| :=     | Definition assignment (is defined as) |
+
+Function application follows standard mathematical notation:
+- `f(x)` is the result of applying function `f` to argument `x`
+- Multiple arguments are comma-separated: `Δ(e₁, e₂)`
+- Nested applications are allowed: `f(g(x))`
+
+
+
+* Terminology
+:PROPERTIES:
+:ID:       8a3c3d7d-9f8a-4aed-bae7-90d90ae4ed1c
+:END:
+** Event (e)
+:PROPERTIES:
+:ID:       6785dfaa-2137-4471-8f4d-0b5e806cd9b4
+:END:
+An event is a discrete occurrence in time, representing a moment or
+action that can be mapped to a specific time point. It is the most
+basic unit in a temporal model.
+
+** Time Point (τ)
+:PROPERTIES:
+:ID:       0ad45f26-1b7a-4c3a-9f4a-140376b934ab
+:END:
+A time point represents a specific instant in time. It is an
+abstraction used to denote the occurrence of an event or the position
+of an anchor in time.
+
+** Time Duration (Δ)
+:PROPERTIES:
+:ID:       ee6adab0-1a9b-4158-bae5-acfe8d1ccbe6
+:END:
+The duration represents the time difference between two time points or
+events. It is always a non-negative value, describing how long
+something lasts between two temporal moments.
+
+** Time Range (τ₁, τ₂)
+:PROPERTIES:
+:ID:       b9d2b17e-1ece-45bf-9e48-f49acba0a438
+:END:
+A time range is a continuous interval between two time points (τ₁ and
+τ₂). This range is defined by its starting and ending time points,
+representing a segment of time.
+
+** Time Anchor (𝒜)
+:PROPERTIES:
+:ID:       c50395f9-369e-499e-af89-07e01060a405
+:END:
+A time anchor is a reference point in time that helps define relative
+times. Anchors are used as fixed markers in the temporal framework,
+against which other time-related events or ranges are measured.
+
+** Temporal Function (f)
+:PROPERTIES:
+:ID:       ea1289cc-b34e-4611-9a76-ada64cfa03e7
+:END:
+A temporal function is a mathematical function that maps events to
+time points or other time-related values. It can be used to model
+relationships between events, such as precedence or causality.
+
+** Precedence (≺)
+:PROPERTIES:
+:ID:       22d45efe-c9e2-4aee-ab49-1c7355f29ce9
+:END:
+Precedence is a temporal relation where one event occurs before
+another event. This relation is transitive, meaning that if **e₁ ≺
+e₂** and **e₂ ≺ e₃**, then **e₁ ≺ e₃**.
+
+** Succession (≻)
+:PROPERTIES:
+:ID:       c5b19785-112d-4749-a123-bf8dac655d39
+:END:
+Succession denotes the temporal relation where one event occurs after
+another event. This relation is transitive, meaning that if **e₁ ≻
+e₂** and **e₂ ≻ e₃**, then **e₁ ≻ e₃**.
+
+** Causality (→)
+:PROPERTIES:
+:ID:       fc7ab533-4ebe-4040-a67b-1ead1d25bdbe
+:END:
+Causality denotes the relationship where one event (the cause) leads
+to another event (the effect). This relation models the
+cause-and-effect chains that govern the sequence of events in time.
+
+** Reverse Causality (←)
+:PROPERTIES:
+:ID:       b02537ad-ce51-4c40-8133-d4aea55cb5d8
+:END:
+Reverse causality denotes the relationship where the effect leads to
+the cause. This relation represents cases where an event causes
+another event to occur in reverse order.
+
+** Equivalence (≡)
+:PROPERTIES:
+:ID:       c1ab7c2e-24f0-4a01-a1b0-55dafc28477b
+:END:
+Equivalence is used to express the idea that two time-related
+expressions are equal or represent the same event or time point. This
+is a way of establishing logical equivalence in temporal models.
+
+** Non-Equivalence (≠)
+:PROPERTIES:
+:ID:       a79754ed-6ec5-4618-b7e9-0a64081c79c5
+:END:
+Non-equivalence denotes the relationship where two time-related
+expressions are not equal, i.e., they represent different events or
+time points.
