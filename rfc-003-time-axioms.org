@@ -54,7 +54,6 @@ Function application follows standard mathematical notation:
 - Nested applications are allowed: `f(g(x))`
 
 
-
 * Terminology
 :PROPERTIES:
 :ID:       8a3c3d7d-9f8a-4aed-bae7-90d90ae4ed1c
@@ -112,16 +111,16 @@ relationships between events, such as precedence or causality.
 :ID:       22d45efe-c9e2-4aee-ab49-1c7355f29ce9
 :END:
 Precedence is a temporal relation where one event occurs before
-another event. This relation is transitive, meaning that if **e₁ ≺
-e₂** and **e₂ ≺ e₃**, then **e₁ ≺ e₃**.
+another event. This relation is transitive, meaning that if *e₁ ≺
+e₂* and *e₂ ≺ e₃*, then *e₁ ≺ e₃*.
 
 ** Succession (≻)
 :PROPERTIES:
 :ID:       c5b19785-112d-4749-a123-bf8dac655d39
 :END:
 Succession denotes the temporal relation where one event occurs after
-another event. This relation is transitive, meaning that if **e₁ ≻
-e₂** and **e₂ ≻ e₃**, then **e₁ ≻ e₃**.
+another event. This relation is transitive, meaning that if *e₁ ≻
+e₂* and *e₂ ≻ e₃*, then *e₁ ≻ e₃*.
 
 ** Causality (→)
 :PROPERTIES:
@@ -154,3 +153,158 @@ is a way of establishing logical equivalence in temporal models.
 Non-equivalence denotes the relationship where two time-related
 expressions are not equal, i.e., they represent different events or
 time points.
+
+* Axioms
+:PROPERTIES:
+:ID:       5255d458-3a33-49f9-83ca-4fd2f785a25b
+:END:
+** Axiom 1: Temporal Order Exists
+:PROPERTIES:
+:ID:       25c7869a-a2c8-4e59-8c43-69fa8fe15bbc
+:END:
+Time allows ordering of events.
+
+∀ e₁, e₂ ∈ 𝓔: (e₁ ≺ e₂) ∨ (e₂ ≺ e₁) ∨ (e₁ ≡ e₂)
+
+This axiom states that for any pair of events, one precedes the other
+or they are temporally equivalent.
+
+** Axiom 2: Causal Relations Are Time-Respecting
+:PROPERTIES:
+:ID:       a662cf60-e9d0-4f6e-a83a-194567f77a73
+:END:
+Causality implies temporal order.
+#+BEGIN_SRC latex
+∀ e₁, e₂ ∈ 𝓔: (e₁ → e₂) → ∃ τ₁, τ₂ ∈ τ: (τ₁ ≺ τ₂ ∧ e₁(τ₁) ∧ e₂(τ₂))
+#+END_SRC
+If one event causes another, the cause must precede the effect in time.
+
+** Axiom 3: Irreversibility of Causality
+:PROPERTIES:
+:ID:       7cda20f6-d7e2-4759-af07-e0a60b4b6a4a
+:END:
+Causes cannot be effects of their own effects.
+#+BEGIN_SRC latex
+∀ e₁, e₂ ∈ 𝓔: (e₁ → e₂) → ¬(e₂ → e₁)
+#+END_SRC
+
+** Axiom 4: Temporal Transitivity
+:PROPERTIES:
+:ID:       1f2d18fb-8333-434b-b096-03f43005e37e
+:END:
+Temporal order is transitive.
+#+BEGIN_SRC latex
+∀ e₁, e₂, e₃ ∈ 𝓔: (e₁ ≺ e₂ ∧ e₂ ≺ e₃) → (e₁ ≺ e₃)
+#+END_SRC
+
+** Axiom 5: Time is Measurable
+:PROPERTIES:
+:ID:       0b386f53-d229-4b5b-9910-9825d2754f82
+:END:
+The difference between two time points is always measurable.
+#+BEGIN_SRC latex
+∀ τ₁, τ₂ ∈ τ: (τ₁ ≺ τ₂) → ∃ Δ > 0: |τ₂ - τ₁| = Δ
+#+END_SRC
+
+** Axiom 6: Unique Event Identification
+:PROPERTIES:
+:ID:       3fe81ff7-7074-410b-a01c-d6f7cd9e96e0
+:END:
+An event is uniquely determined by its time and causal context.
+#+BEGIN_SRC latex
+∀ e₁, e₂ ∈ 𝓔: (e₁(τ₁) = e₂(τ₂)) ∧ (∀ eₓ: (e₁ → eₓ) ≡ (e₂ → eₓ)) → e₁ ≡ e₂
+#+END_SRC
+
+** Axiom 7: Symmetry of Equivalence
+:PROPERTIES:
+:ID:       07079dde-db74-411b-97b6-4f2467e5b8b6
+:END:
+Temporal equivalence is symmetric.
+#+BEGIN_SRC latex
+∀ e₁, e₂ ∈ 𝓔: (e₁ ≡ e₂) ⇔ (e₂ ≡ e₁)
+#+END_SRC
+
+** Axiom 8: Independence of Non-Causal Events
+:PROPERTIES:
+:ID:       e882b759-32bb-4c4b-b742-fdf9bcdd3374
+:END:
+Events not causally linked are temporally independent.
+#+BEGIN_SRC latex
+∀ e₁, e₂ ∈ 𝓔: ¬(e₁ → e₂) ∧ ¬(e₂ → e₁) → e₁ ⫫ e₂
+#+END_SRC
+
+** Axiom 9: Anchors Exist
+:PROPERTIES:
+:ID:       b10b289e-74f0-41c1-ac8d-c803c6e87d2f
+:END:
+There exist time points that serve as referential markers.
+#+BEGIN_SRC latex
+∃ α ∈ τ: ∀ e ∈ 𝓔: anchor(e) = α ⇔ (e occurs relative to α)
+#+END_SRC
+
+** Axiom 10: Event Locality
+:PROPERTIES:
+:ID:       e70f179b-e245-4949-9f8b-8be951f56ac5
+:END:
+Each event occurs at a well-defined time point.
+#+BEGIN_SRC latex
+∀ e ∈ 𝓔: ∃! τ ∈ τ: e(τ)
+#+END_SRC
+
+** Axiom 11: Continuity (optional)
+:PROPERTIES:
+:ID:       93c961d4-f27e-4b24-a9e2-9dc7bd42adf2
+:END:
+Between any two time points, there exists another.
+#+BEGIN_SRC latex
+∀ τ₁, τ₂ ∈ τ: (τ₁ ≺ τ₂) → ∃ τₓ ∈ τ: (τ₁ ≺ τₓ ≺ τ₂)
+#+END_SRC
+(This assumes a dense or continuous time axis, but could be weakened or excluded depending on whether discrete-time models should be allowed.)
+
+** Axiom 12: Time is Unidirectional
+:PROPERTIES:
+:ID:       8eca16c1-898f-4057-9a26-4fdb856ebc6e
+:END:
+Time flows in one direction (no reversal).
+#+BEGIN_SRC latex
+∀ τ₁, τ₂ ∈ τ: τ₁ ≺ τ₂ → ¬(τ₂ ≺ τ₁)
+#+END_SRC
+
+** Axiom 13: Temporal Consistency
+:PROPERTIES:
+:ID:       6505a094-3c5d-4443-9d6c-058e2c413ca8
+:END:
+No contradiction in ordering can exist.
+#+BEGIN_SRC latex
+∀ e₁, e₂ ∈ 𝓔: (e₁ ≺ e₂) → ¬(e₂ ≺ e₁)
+#+END_SRC
+
+** Axiom 14: Minimal Assumption Principle
+:PROPERTIES:
+:ID:       5074bcfb-3db1-4575-8be1-a8fa2d75e016
+:END:
+If a time structure allows multiple consistent interpretations, none is favored axiomatically.
+#+BEGIN_SRC latex
+¬ ∃ axiom A: (A excludes valid physical interpretation consistent with all above axioms)
+#+END_SRC
+(This is a meta-axiom: it restricts the system to avoid unnecessary assumptions.)
+
+** Axiom 15: Time-Agnostic Modeling of State Superposition
+:PROPERTIES:
+:ID:       2d06923d-f117-4de4-9623-2695369f0e30
+:END:
+Temporal models must permit representation of non-temporal state multiplicity (e.g., quantum superposition), without violating core time structure.
+#+BEGIN_SRC latex
+∃ e ∈ 𝓔: (e(τ) = {s₁, s₂, ..., sₙ}) ∧ ∀ sᵢ ≠ sⱼ: (e collapses to one sₖ upon measurement)
+#+END_SRC
+
+** Axiom 16: Compatibility with Observed Physics
+:PROPERTIES:
+:ID:       6fe02ac1-d738-4a75-92f6-9ca7dc103710
+:END:
+Any time axiom must be consistent with experimental observations (e.g., relativity, quantum nonlocality).
+#+BEGIN_SRC latex
+∀ A ∈ 𝓐: (A ∈ axioms) → (A ⊨ physical experiments)
+#+END_SRC
+
+
